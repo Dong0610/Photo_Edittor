@@ -20,7 +20,7 @@
         android:text="Crop"
         android:textAlignment="center"
         android:textFontWeight="600"
-        android:textColor="@color/white"
+        android:textColor="#00FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

@@ -162,6 +162,8 @@ fun get_all_colorsxml(context: Context): List<ColorFilter> {
 class Colors {
    companion object {
        @ColorInt
+       val TRANSPARENT:Int = 0x00FFFFFF.toInt()
+       @ColorInt
        val APP_COLOR: Int = 0xFF6B27F6.toInt()
 
        @ColorInt

@@ -46,4 +46,23 @@
         <attr name="cropFlipHorizontally" format="boolean"/>
         <attr name="cropFlipVertically" format="boolean"/>
     </declare-styleable>
+    <declare-styleable name="DrawBoardView">
+        <attr name="dbvMinZoom" format="float"/>
+        <attr name="dbvMaxZoom" format="float"/>
+        <attr name="dbvFit" format="boolean"/>
+        <attr name="dbvDrawEnabled" format="boolean"/>
+        <attr name="dbvZoomEnabled" format="boolean"/>
+        <attr name="dbvShowTouchPoint" format="boolean"/>
+        <attr name="android:src" />
+        <attr name="dbvPaintColor" format="color"/>
+        <attr name="dbvTouchPointColor" format="color"/>
+        <attr name="dbvDrawTextSize" format="dimension"/>
+        <attr name="dbvDrawTextBold" format="boolean"/>
+        <attr name="dbvDrawTextUnderline" format="boolean"/>
+        <attr name="dbvTouchTolerance" format="float"/>
+        <attr name="dbvTouchPointRatio" format="float"/>
+    </declare-styleable>
+    <declare-styleable name="PhotoEditorView">
+        <attr name="photo_src" format="integer" />
+    </declare-styleable>
 </resources>

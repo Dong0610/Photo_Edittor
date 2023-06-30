@@ -1,0 +1,2 @@
+ninja: Entering directory `E:\Android Kotlin\PhotoEdittor\Open CV\.cxx\Debug\1w4o3s6j\arm64-v8a'
+ninja: no work to do.

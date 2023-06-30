@@ -18,13 +18,25 @@ import dong.duan.photoedittor.edit_library.effect.EffectFactory
 import dong.duan.photoedittor.file.show_popup_seekbar
 import dong.duan.photoedittor.model.EditData
 import dong.duan.photoedittor.model.ImageData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 class AdjustFragment : Fragment() {
     lateinit var binding: FragmentAdjustBinding
-    lateinit var effect: Effect
+
     lateinit var image_edit:ImageData
     lateinit var bitmap_result:Bitmap
     var adapter: GenericAdapter<EditData, ItemEditListBinding>? = null
+
+    private var imageJob: Job? = null
+    private val imageScope = CoroutineScope(Dispatchers.Main)
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +55,26 @@ class AdjustFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        imageJob?.cancel()
+        imageScope.cancel()
+
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     private fun load_adjust() {
         var list_filter = ArrayList<EditData>()
         list_filter.add(EditData(1, "Auto", R.drawable.ic_filter))
+        list_filter.add(EditData(2, "Brightness", R.drawable.ic_filter))
+       list_filter.add(EditData(3,"Contrast",R.drawable.ic_filter))
+        list_filter.add(EditData(4, "Saturation", R.drawable.ic_filter))
+        list_filter.add(EditData(5, "Exposure", R.drawable.ic_filter))
+        list_filter.add(EditData(6,"Tint",R.drawable.ic_filter))
+        list_filter.add(EditData(7, "Temperature", R.drawable.ic_filter))
+        list_filter.add(EditData(8, "Tone", R.drawable.ic_filter))
+        list_filter.add(EditData(9,"Slossiness",R.drawable.ic_filter))
+        list_filter.add(EditData(10,"Shadow",R.drawable.ic_filter))
+
         adapter = GenericAdapter(
             list_filter,
             ItemEditListBinding::inflate
@@ -61,21 +89,146 @@ class AdjustFragment : Fragment() {
         binding.rcvlistEdit.adapter = adapter
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
+    fun run_blocking(function:()->Unit){
+        GlobalScope.launch(Dispatchers.Default) {
+            launch(Dispatchers.Main) {
+               function()
+            }
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun set_filter(editdata: EditData, it: View, textEdit: TextView) {
         when(editdata.id){
             1->{
-                show_popup_seekbar(it, this@AdjustFragment,75 , 25, 125, 100) { value ->
+                show_popup_seekbar(it, this@AdjustFragment,0 , 25, 125, 100) { value ->
+                   run_blocking {
                     val valueset = (value*0.01f).coerceIn(0.35f,1.25f)
                     textEdit.text=(value-25).toString()
                     bitmap_result= EffectFactory(image_edit.bitmap!!).apply_auto_fix(valueset,1.2f)
                     binding.imageView.setImageBitmap(bitmap_result)
+                   }
+                }
+            }
+            2->{
+                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, 100) { value ->
+                    run_blocking {
+                    imageJob?.cancel()
+                    imageJob = imageScope.launch {
+                        textEdit.text=(value).toString()
+                        bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_brightness(value.toInt())
+                        binding.imageView.setImageBitmap(bitmap_result)
+                    }
+                    }
+                }
+            }
+
+            3->{
+                show_popup_seekbar(it, this@AdjustFragment,0 , -10, 10, 100) { value ->
+                    run_blocking {
+                        imageJob?.cancel()
+                        imageJob = imageScope.launch {
+                            textEdit.text=(value).toString()
+                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_contrast(value.toFloat())
+                            binding.imageView.setImageBitmap(bitmap_result)
+                        }
+                    }
+                }
+            }
+            4->{
+                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, 100) { value ->
+                    run_blocking {
+                        imageJob?.cancel()
+                        imageJob = imageScope.launch {
+                            textEdit.text=(value).toString()
+                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_saturation(value.toFloat())
+                            binding.imageView.setImageBitmap(bitmap_result)
+                        }
+                    }
+                }
+            }
+
+            5->{
+                show_popup_seekbar(it, this@AdjustFragment,0 , 0, 10, 100) { value ->
+                    run_blocking {
+                        imageJob?.cancel()
+                        imageJob = imageScope.launch {
+                            textEdit.text=(value).toString()
+                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_exposure(value.toFloat())
+                            binding.imageView.setImageBitmap(bitmap_result)
+                        }
+                    }
+                }
+            }
+            6->{
+                show_popup_seekbar(it, this@AdjustFragment,10, 0, 20, 100) { value ->
+                    run_blocking {
+                        imageJob?.cancel()
+                        imageJob = imageScope.launch {
+                            textEdit.text= abs(value*5).toString()
+                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_tint((value-20).toFloat())
+                            binding.imageView.setImageBitmap(bitmap_result)
+                        }
+                    }
+                }
+            }
+
+            7->{
+                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, 100) { value ->
+                    run_blocking {
+                        imageJob?.cancel()
+                        imageJob = imageScope.launch {
+                            textEdit.text=(value).toString()
+                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_temperature(value)
+                            binding.imageView.setImageBitmap(bitmap_result)
+                        }
+                    }
+                }
+            }
+            8->{
+            show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, 100) { value ->
+                run_blocking {
+                    imageJob?.cancel()
+                    imageJob = imageScope.launch {
+                        textEdit.text=(value).toString()
+                        bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_tone(value.toFloat())
+                        binding.imageView.setImageBitmap(bitmap_result)
+                    }
+                }
+            }
+        }
+
+            9->{
+                show_popup_seekbar(it, this@AdjustFragment,0 , -10, 10, 100) { value ->
+                    run_blocking {
+                        imageJob?.cancel()
+                        imageJob = imageScope.launch {
+                            textEdit.text=(value).toString()
+                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_slossiness(value.toFloat())
+                            binding.imageView.setImageBitmap(bitmap_result)
+                        }
+                    }
+                }
+            }
+            10->{
+                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, 100) { value ->
+                    run_blocking {
+                        imageJob?.cancel()
+                        imageJob = imageScope.launch {
+                            textEdit.text=(value).toString()
+                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_shadow(value.toFloat())
+                            binding.imageView.setImageBitmap(bitmap_result)
+                        }
+                    }
                 }
             }
         }
     }
 
-
+    fun bitmap_result():Bitmap{
+        return  bitmap_result
+    }
 
 
 }

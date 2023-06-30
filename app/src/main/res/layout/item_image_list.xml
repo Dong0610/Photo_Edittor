@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    android:layout_margin="@dimen/_3sdp"
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_150sdp">
+    android:layout_height="@dimen/_180sdp"
+    android:orientation="horizontal">
 
-
-    <ImageView
-        android:maxWidth="@dimen/_100sdp"
-        android:src="@drawable/img"
-        android:layout_gravity="center"
-        android:scaleType="centerCrop"
-        android:id="@+id/image_item"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_150sdp"
-        />
-    <RadioButton
-        android:id="@+id/checkImage"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
-        android:buttonTint="@color/appcolor" />
-</androidx.cardview.widget.CardView>
+        android:layout_weight="1"
+        android:layout_margin="8dp"
+        android:elevation="4dp">
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

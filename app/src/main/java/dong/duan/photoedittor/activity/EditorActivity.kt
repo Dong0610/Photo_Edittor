@@ -4,10 +4,15 @@ import android.content.ContentUris
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.widget.LinearLayout.LayoutParams
 import androidx.fragment.app.Fragment
 import dong.duan.photoedittor.R
 import dong.duan.photoedittor.activity.fragment.AdjustFragment
 import dong.duan.photoedittor.activity.fragment.CropFragment
+import dong.duan.photoedittor.activity.fragment.DrawFragment
+import dong.duan.photoedittor.activity.fragment.FilterFragment
+import dong.duan.photoedittor.activity.fragment.PixelFragment
+import dong.duan.photoedittor.activity.fragment.TextFragment
 import dong.duan.photoedittor.adapter.GenericAdapter
 import dong.duan.photoedittor.databinding.ActivityEditorBinding
 import dong.duan.photoedittor.databinding.ItemEditListBinding
@@ -35,7 +40,7 @@ class EditorActivity : FullScreenActivity() {
         image_edit.bitmap = bitmap_from_uri(applicationContext, contentUri)
         binding.imageView.setImageBitmap(image_edit.bitmap)
 
-        binding.rcvlistEdit.adapter = GenericAdapter<EditData, ItemEditListBinding>(
+        binding.rcvlistEdit.adapter = GenericAdapter(
             list_edit,
             ItemEditListBinding::inflate
         ) { itembinding: ItemEditListBinding, data, position ->
@@ -52,6 +57,7 @@ class EditorActivity : FullScreenActivity() {
 
         even_click()
     }
+
 
     private fun even_click() {
 
@@ -87,6 +93,38 @@ class EditorActivity : FullScreenActivity() {
                 load_fragmen(fragment)
             }
 
+            3->{
+                val fragment = FilterFragment();
+                val dataput = Bundle()
+                dataput.putSerializable("image", image_edit)
+                fragment.arguments = dataput
+                load_fragmen(fragment)
+            }
+
+            4->{
+                val fragment = PixelFragment();
+                val dataput = Bundle()
+                dataput.putSerializable("image", image_edit)
+                fragment.arguments = dataput
+                load_fragmen(fragment)
+            }
+
+            5->{
+                val fragment = DrawFragment();
+                val dataput = Bundle()
+                dataput.putSerializable("image", image_edit)
+                fragment.arguments = dataput
+                load_fragmen(fragment)
+            }
+            6->{
+                val fragment = TextFragment();
+                val dataput = Bundle()
+                dataput.putSerializable("image", image_edit)
+                fragment.arguments = dataput
+                load_fragmen(fragment)
+            }
+
+
         }
     }
 
@@ -95,6 +133,7 @@ class EditorActivity : FullScreenActivity() {
             binding.imageView.visibility = View.GONE
             binding.rcvlistEdit.visibility = View.GONE
             binding.layoutFrame.visibility = View.VISIBLE
+            binding.constraintLayout5.layoutParams.height= 0
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.layout_frame, fragment)
@@ -106,6 +145,7 @@ class EditorActivity : FullScreenActivity() {
             binding.layoutFrame.visibility = View.GONE
             binding.layoutFrame.removeAllViews()
             binding.txtSave.text = "Save"
+            binding.constraintLayout5.layoutParams.height= com.intuit.sdp.R.dimen._80sdp
         }
     }
 
@@ -114,9 +154,9 @@ class EditorActivity : FullScreenActivity() {
         list_edit.add(EditData(1, "Crop", R.drawable.ic_crop))
         list_edit.add(EditData(2, "Adjust", R.drawable.ic_adjust))
         list_edit.add(EditData(3, "Filter", R.drawable.ic_filter))
-        list_edit.add(EditData(6, "Pixel", R.drawable.ic_pixel_late))
-        list_edit.add(EditData(4, "Draw", R.drawable.ic_pen))
-        list_edit.add(EditData(5, "Text", R.drawable.ic_text))
+        list_edit.add(EditData(4, "Pixel", R.drawable.ic_pixel_late))
+        list_edit.add(EditData(5, "Draw", R.drawable.ic_pen))
+        list_edit.add(EditData(6, "Text", R.drawable.ic_text))
 
     }
 }

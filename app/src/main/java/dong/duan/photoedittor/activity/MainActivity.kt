@@ -54,9 +54,9 @@ class MainActivity : BaseActivity() {
             list_image,
             ItemImageListBinding::inflate
         ) { binding: ItemImageListBinding, imageData: ImageData, position: Int ->
-            binding.checkImage.isChecked = selcect == position
+         //   binding.checkImage.isChecked = selcect == position
             val bitmap = bitmap_from_id(imageData.id, applicationContext)
-            binding.imageItem.setImageBitmap(bitmap)
+            binding.imageView.setImageBitmap(bitmap)
             binding.root.setOnClickListener {
                 selcect = position
                 adapterimg!!.notifyDataSetChanged()
@@ -101,9 +101,9 @@ class MainActivity : BaseActivity() {
             listnewimg,
             ItemImageListBinding::inflate
         ) { binding: ItemImageListBinding, imageData: ImageData, position: Int ->
-            binding.checkImage.isChecked = selcect == position
+        //    binding.checkImage.isChecked = selcect == position
             val bitmap = bitmap_from_id(imageData.id, applicationContext)
-            binding.imageItem.setImageBitmap(bitmap)
+            binding.imageView.setImageBitmap(bitmap)
             binding.root.setOnClickListener {
                 selcect = position
                 adapterimg!!.notifyDataSetChanged()
@@ -185,6 +185,7 @@ class MainActivity : BaseActivity() {
             binding.rcvListimage.layoutParams.height =
                 resources.getDimension(com.intuit.sdp.R.dimen._180sdp).toInt()
         } else {
+            binding.rcvListimage.setHasFixedSize(true)
             binding.rcvListimage.layoutParams.height = resources.getDimensionPixelSize(com.intuit.sdp.R.dimen._90sdp)
             binding.icViewlayout.setImageResource(R.drawable.ic_arrow_drop_up)
         }
