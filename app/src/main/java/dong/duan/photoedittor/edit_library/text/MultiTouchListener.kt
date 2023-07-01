@@ -178,7 +178,6 @@ internal class MultiTouchListener(
 
     internal interface OnGestureControl {
         fun onClick()
-        fun onLongClick()
     }
 
     fun setOnGestureControl(onGestureControl: OnGestureControl?) {
@@ -194,7 +193,6 @@ internal class MultiTouchListener(
 
         override fun onLongPress(e: MotionEvent) {
             super.onLongPress(e)
-            mOnGestureControl?.onLongClick()
         }
     }
 

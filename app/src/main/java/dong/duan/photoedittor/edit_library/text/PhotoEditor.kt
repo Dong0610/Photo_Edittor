@@ -11,11 +11,7 @@ import androidx.annotation.IntRange
 import androidx.annotation.RequiresPermission
 import androidx.annotation.UiThread
 
-/**
- * Created by Burhanuddin Rashid on 14/05/21.
- *
- * @author <https:></https:>//github.com/burhanrashid52>
- */
+
 interface PhotoEditor {
     /**
      * This will add image on [PhotoEditorView] which you drag,rotate and scale using pinch

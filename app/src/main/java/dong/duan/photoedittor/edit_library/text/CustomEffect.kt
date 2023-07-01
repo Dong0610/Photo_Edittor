@@ -28,14 +28,6 @@ class CustomEffect private constructor(builder: Builder) {
     class Builder(effectName: String) {
         val mEffectName: String
         val parametersMap: MutableMap<String, Any> = HashMap()
-
-        /**
-         * set parameter to the attributes with its value
-         *
-         * @param paramKey   attribute key for [android.media.effect.Effect.setParameter]
-         * @param paramValue value for [android.media.effect.Effect.setParameter]
-         * @return builder instance to setup multiple parameters
-         */
         fun setParameter(paramKey: String, paramValue: Any): Builder {
             parametersMap[paramKey] = paramValue
             return this

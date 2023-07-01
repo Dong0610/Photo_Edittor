@@ -4,14 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import dong.duan.photoedittor.R
 import dong.duan.photoedittor.edit_library.text.MultiTouchListener.OnGestureControl
-
-/**
- * Created by Burhanuddin Rashid on 14/05/21.
- *
- * @author <https:></https:>//github.com/burhanrashid52>
- */
+import dong.duan.photoedittor.file.show_toast
 internal abstract class Graphic(
     val context: Context,
     val layoutId: Int,
@@ -30,31 +26,38 @@ internal abstract class Graphic(
         }
         rootView = LayoutInflater.from(context).inflate(layoutId, null)
         this.setupView(rootView)
+        this.setupEdit(rootView)
         setupRemoveView(rootView)
     }
 
-
+    private fun setupEdit(rootView: View){
+        rootView.tag=viewType
+        val imgEdit=rootView.findViewById<ImageView>(R.id.imgPhotoEditChange)
+        imgEdit.setOnClickListener {
+            updateView(rootView)
+        }
+    }
     private fun setupRemoveView(rootView: View) {
-        //We are setting tag as ViewType to identify what type of the view it is
-        //when we remove the view from stack i.e onRemoveViewListener(ViewType viewType, int numberOfAddedViews);
         rootView.tag = viewType
         val imgClose = rootView.findViewById<ImageView>(R.id.imgPhotoEditorClose)
-      imgClose?.setOnClickListener {
-
-         // graphicManager?.removeView(this@Graphic)
-          updateView(rootView)
-      }
+        imgClose?.setOnClickListener {
+            graphicManager?.removeView(this@Graphic)
+        }
     }
 
     protected fun toggleSelection() {
         val frmBorder = rootView.findViewById<View>(R.id.frmBorder)
         val imgClose = rootView.findViewById<View>(R.id.imgPhotoEditorClose)
+        val imgEdit=rootView.findViewById<ImageView>(R.id.imgPhotoEditChange)
         if (frmBorder != null) {
             frmBorder.setBackgroundResource(R.drawable.rounded_border_tv)
             frmBorder.tag = true
         }
         if (imgClose != null) {
             imgClose.visibility = View.VISIBLE
+        }
+        if (imgEdit != null) {
+            imgEdit.visibility = View.VISIBLE
         }
     }
 
@@ -67,13 +70,10 @@ internal abstract class Graphic(
             override fun onClick() {
                 boxHelper.clearHelperBox()
                 toggleSelection()
-                // Change the in-focus view
+
                 viewState.currentSelectedView = rootView
             }
 
-            override fun onLongClick() {
-             //   updateView(rootView)
-            }
         }
     }
 

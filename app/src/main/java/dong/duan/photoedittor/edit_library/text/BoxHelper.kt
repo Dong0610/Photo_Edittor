@@ -4,12 +4,6 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import dong.duan.photoedittor.R
-
-/**
- * Created by Burhanuddin Rashid on 18/05/21.
- *
- * @author <https:></https:>//github.com/burhanrashid52>
- */
 internal class BoxHelper(
     private val mPhotoEditorView: PhotoEditorView,
     private val mViewState: PhotoEditorViewState
@@ -20,6 +14,8 @@ internal class BoxHelper(
             val frmBorder = childAt.findViewById<FrameLayout>(R.id.frmBorder)
             frmBorder?.setBackgroundResource(0)
             val imgClose = childAt.findViewById<ImageView>(R.id.imgPhotoEditorClose)
+            val imgEdit = childAt.findViewById<ImageView>(R.id.imgPhotoEditChange)
+            imgEdit?.visibility=View.GONE
             imgClose?.visibility = View.GONE
         }
         mViewState.clearCurrentSelectedView()
@@ -34,7 +30,6 @@ internal class BoxHelper(
                 mPhotoEditorView.addView(it)
             }
         }
-
         mViewState.clearAddedViews()
         mViewState.clearRedoViews()
         drawingView?.clearAll()

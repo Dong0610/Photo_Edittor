@@ -18,6 +18,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import dong.duan.photoedittor.adapter.GenericAdapter
 import dong.duan.photoedittor.databinding.ItemColorsViewBinding
 import dong.duan.photoedittor.databinding.LayoutAddTextBinding

@@ -1,5 +1,6 @@
 package dong.duan.photoedittor.edit_library.text
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -47,6 +48,7 @@ internal class GraphicManager(
         mViewState.replaceAddedView(view)
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun undoView(): Boolean {
         if (mViewState.addedViewsCount > 0) {
             val removeView = mViewState.getAddedView(

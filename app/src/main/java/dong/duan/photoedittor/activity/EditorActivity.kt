@@ -1,10 +1,13 @@
 package dong.duan.photoedittor.activity
 
 import android.content.ContentUris
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
-import android.widget.LinearLayout.LayoutParams
 import androidx.fragment.app.Fragment
 import dong.duan.photoedittor.R
 import dong.duan.photoedittor.activity.fragment.AdjustFragment
@@ -12,16 +15,23 @@ import dong.duan.photoedittor.activity.fragment.CropFragment
 import dong.duan.photoedittor.activity.fragment.DrawFragment
 import dong.duan.photoedittor.activity.fragment.FilterFragment
 import dong.duan.photoedittor.activity.fragment.PixelFragment
-import dong.duan.photoedittor.activity.fragment.TextFragment
+import dong.duan.photoedittor.activity.fragment.TextActivity
 import dong.duan.photoedittor.adapter.GenericAdapter
 import dong.duan.photoedittor.databinding.ActivityEditorBinding
 import dong.duan.photoedittor.databinding.ItemEditListBinding
 import dong.duan.photoedittor.file.FullScreenActivity
 import dong.duan.photoedittor.file.bitmap_from_uri
+import dong.duan.photoedittor.file.bitmap_to_file
+import dong.duan.photoedittor.file.show_toast
+import dong.duan.photoedittor.file.uri_from_bitmap
 import dong.duan.photoedittor.model.EditData
 import dong.duan.photoedittor.model.ImageData
+import dong.duan.photoedittor.model.ImageDataHolder
+import dong.duan.photoedittor.model.ImageEdit
+import java.io.ByteArrayOutputStream
 
 
+@Suppress("DEPRECATION")
 class EditorActivity : FullScreenActivity() {
     lateinit var binding: ActivityEditorBinding
     lateinit var image_edit: ImageData
@@ -75,6 +85,18 @@ class EditorActivity : FullScreenActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode== REQUEST_CODE_TEXT && resultCode== RESULT_OK){
+            val filePath = data?.getStringExtra("image")
+
+            binding.imageView.setImageBitmap(BitmapFactory.decodeFile(filePath))
+        }
+
+    }
+
+
     private fun edit_image(data: EditData) {
 
         when (data.id) {
@@ -117,11 +139,22 @@ class EditorActivity : FullScreenActivity() {
                 load_fragmen(fragment)
             }
             6->{
-                val fragment = TextFragment();
-                val dataput = Bundle()
-                dataput.putSerializable("image", image_edit)
-                fragment.arguments = dataput
-                load_fragmen(fragment)
+                val intent = Intent(this, TextActivity::class.java)
+//               uri_from_bitmap(applicationContext,image_edit.bitmap!!){
+//                   uri ->
+//                   if(uri==null){
+//                       show_toast(applicationContext,"Null value")
+//                   }
+//                   else{
+//
+//
+//                   intent.data=uri
+//                   startActivityForResult(intent, REQUEST_CODE_TEXT)
+//                   }
+//               }
+                intent.putExtra("bimap", bitmap_to_file(image_edit.bitmap!!,this).absolutePath)
+                startActivityForResult(intent, REQUEST_CODE_TEXT)
+
             }
 
 
@@ -158,5 +191,9 @@ class EditorActivity : FullScreenActivity() {
         list_edit.add(EditData(5, "Draw", R.drawable.ic_pen))
         list_edit.add(EditData(6, "Text", R.drawable.ic_text))
 
+    }
+
+    companion object{
+        const val REQUEST_CODE_TEXT=1
     }
 }

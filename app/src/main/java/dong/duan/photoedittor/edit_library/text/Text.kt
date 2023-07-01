@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import dong.duan.photoedittor.R
+import dong.duan.photoedittor.file.show_toast
 
 internal class Text(
     private val mPhotoEditorView: PhotoEditorView,
@@ -37,6 +38,7 @@ internal class Text(
         rootView.setOnTouchListener(mMultiTouchListener)
     }
 
+
     override fun setupView(rootView: View) {
         mTextView = rootView.findViewById(R.id.tvPhotoEditorText)
         mTextView?.run {
@@ -46,10 +48,10 @@ internal class Text(
     }
 
     override fun updateView(view: View) {
-        Toast.makeText(context,"Long event",Toast.LENGTH_LONG).show()
+        super.updateView(view)
         val textInput = mTextView?.text.toString()
         val currentTextColor = mTextView?.currentTextColor ?: 0
-        val photoEditorListener = mGraphicManager.onPhotoEditorListener
+        val photoEditorListener = graphicManager?.onPhotoEditorListener
         photoEditorListener?.onEditTextChangeListener(view, textInput, currentTextColor)
     }
 

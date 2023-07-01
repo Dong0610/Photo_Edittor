@@ -29,6 +29,9 @@
             android:name=".activity.EditorActivity"
             android:exported="true" />
         <activity
+            android:name=".activity.fragment.TextActivity"
+            android:exported="true" />
+        <activity
             android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
