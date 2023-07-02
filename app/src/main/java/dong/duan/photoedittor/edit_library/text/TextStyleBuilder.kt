@@ -96,7 +96,7 @@ open class TextStyleBuilder {
             textAppearance
     }
 
-    fun withTextStyle(typeface: Int) {
+    fun withTextStyle(typeface: Typeface) {
         values[TextStyle.TEXT_STYLE] = typeface
     }
 

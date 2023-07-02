@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import dong.duan.photoedittor.R
 import dong.duan.photoedittor.edit_library.text.MultiTouchListener.OnGestureControl
+import dong.duan.photoedittor.file.PreferenceManager
 import dong.duan.photoedittor.file.show_toast
 internal abstract class Graphic(
     val context: Context,
@@ -20,10 +21,12 @@ internal abstract class Graphic(
         //Optional for subclass to override
     }
 
+    private lateinit var preferenceManager:PreferenceManager
     init {
         if (layoutId == 0) {
             throw UnsupportedOperationException("Layout id cannot be zero. Please define a layout")
         }
+        preferenceManager= PreferenceManager(context)
         rootView = LayoutInflater.from(context).inflate(layoutId, null)
         this.setupView(rootView)
         this.setupEdit(rootView)
@@ -32,10 +35,15 @@ internal abstract class Graphic(
 
     private fun setupEdit(rootView: View){
         rootView.tag=viewType
-        val imgEdit=rootView.findViewById<ImageView>(R.id.imgPhotoEditChange)
-        imgEdit.setOnClickListener {
-            updateView(rootView)
+        val textval=preferenceManager.GetString("edt").toString()
+        if(!textval.equals("emoj")){
+            val imgEdit=rootView.findViewById<ImageView>(R.id.imgPhotoEditChange)
+            imgEdit.visibility= View.GONE
+            imgEdit.setOnClickListener {
+                updateView(rootView)
+            }
         }
+
     }
     private fun setupRemoveView(rootView: View) {
         rootView.tag = viewType

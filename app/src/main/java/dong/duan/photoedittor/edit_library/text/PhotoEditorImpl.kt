@@ -10,9 +10,10 @@ import android.view.GestureDetector
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.IntRange
 import androidx.annotation.RequiresPermission
 import dong.duan.photoedittor.R
+import dong.duan.photoedittor.edit_library.emoji.Emoji
+import dong.duan.photoedittor.edit_library.emoji.Sticker
 import dong.duan.photoedittor.edit_library.text.PhotoEditorImageViewListener.OnSingleTapUpCallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -38,8 +39,6 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     private val imageView: ImageView = builder.imageView
     private val deleteView: View? = builder.deleteView
     private val drawingView: DrawingView = builder.drawingView
-    private val mBrushDrawingStateListener: BrushDrawingStateListener =
-        BrushDrawingStateListener(builder.photoEditorView, viewState)
     private val mBoxHelper: BoxHelper = BoxHelper(builder.photoEditorView, viewState)
     private var mOnPhotoEditorListener: OnPhotoEditorListener? = null
     private val isTextPinchScalable: Boolean = builder.isTextPinchScalable
@@ -220,7 +219,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     override fun setOnPhotoEditorListener(onPhotoEditorListener: OnPhotoEditorListener) {
         mOnPhotoEditorListener = onPhotoEditorListener
         mGraphicManager.onPhotoEditorListener = mOnPhotoEditorListener
-        mBrushDrawingStateListener.setOnPhotoEditorListener(mOnPhotoEditorListener)
+
     }
 
     override val isCacheEmpty: Boolean
@@ -231,7 +230,7 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
     }
 
     init {
-        drawingView?.setBrushViewChangeListener(mBrushDrawingStateListener)
+
         val mDetector = GestureDetector(
             context,
             PhotoEditorImageViewListener(
@@ -244,7 +243,6 @@ internal class PhotoEditorImpl @SuppressLint("ClickableViewAccessibility") const
             )
         )
         imageView?.setOnTouchListener { _, event ->
-            mOnPhotoEditorListener?.onTouchSourceImage(event)
             mDetector.onTouchEvent(event)
         }
         photoEditorView.setClipSourceImage(builder.clipSourceImage)

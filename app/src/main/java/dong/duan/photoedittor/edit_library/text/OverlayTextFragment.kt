@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
-import android.nfc.Tag
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,13 +18,15 @@ import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
+import dong.duan.photoedittor.R
 import dong.duan.photoedittor.adapter.GenericAdapter
 import dong.duan.photoedittor.databinding.ItemColorsViewBinding
+import dong.duan.photoedittor.databinding.ItemFontTextBinding
 import dong.duan.photoedittor.databinding.LayoutAddTextBinding
 import dong.duan.photoedittor.file.Colors
 import dong.duan.photoedittor.file.get_all_colorsxml
+import dong.duan.photoedittor.file.show_toast
+
 
 @Suppress("UNREACHABLE_CODE")
 class OverlayTextFragment : DialogFragment() {
@@ -38,7 +40,7 @@ class OverlayTextFragment : DialogFragment() {
     private var text_editor_event: TextEditorEvent? = null
 
     interface TextEditorEvent {
-        fun onDone(input: String, color: Int)
+        fun onDone(input: String, color: Int, typeface: Int?)
     }
 
     override fun onStart() {
@@ -63,8 +65,10 @@ class OverlayTextFragment : DialogFragment() {
 
     }
 
+    private var typeface: Typeface? = null
+
     @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("SuspiciousIndentation")
+    @SuppressLint("SuspiciousIndentation", "WrongConstant")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity()
@@ -87,6 +91,7 @@ class OverlayTextFragment : DialogFragment() {
             }
         }
 
+        settype_event()
         val argument = requireArguments()
 
         add_edit_text.setText(argument.getString(EXTRA_INPUT_TEXT))
@@ -100,12 +105,67 @@ class OverlayTextFragment : DialogFragment() {
             val inputtext = add_edit_text.text.toString()
             val text_event = text_editor_event
             if (inputtext.isNotEmpty() && text_event != null) {
-                text_event.onDone(inputtext, text_color)
+                if(typeface==null){
+                    show_toast(requireContext(),"null")
+                }
+                text_event.onDone(inputtext, text_color, text_font)
             }
         }
 
 
     }
+
+    private fun settype_event() {
+        binding.vagrb.setOnClickListener {
+            settypeface(it)
+            text_font=R.font.vagrb
+        }
+        binding.vallergo.setOnClickListener {
+            settypeface(it)
+            text_font=R.font.vallergo
+        }
+        binding.vbookmn.setOnClickListener {
+            settypeface(it as TextView)
+            text_font=R.font.vbookmn
+        }
+        binding.vnmaladay.setOnClickListener {
+            settypeface(it)
+            text_font=R.font.vnmaladay
+        }
+        binding.vnshell.setOnClickListener {
+            settypeface(it)
+            text_font=R.font.vnshell
+        }
+        binding.vnstam.setOnClickListener {
+            settypeface(it)
+            text_font=R.font.vnstam
+        }
+        binding.vrevue.setOnClickListener {
+            settypeface(it)
+            text_font=R.font.vrevue
+        }
+        binding.vnswansong.setOnClickListener {
+            settypeface(it)
+            text_font=R.font.vnswansong
+        }
+        binding.vtekti.setOnClickListener {
+            settypeface(it)
+            text_font=R.font.vtekti
+        }
+        binding.vtube.setOnClickListener {
+            settypeface(it)
+            text_font=R.font.vtube
+        }
+
+    }
+
+    var text_font:Int?=null
+    private fun settypeface(view: View) {
+        val view2 = view as TextView
+        add_edit_text.typeface = view2.typeface
+        typeface = view2.typeface
+    }
+
 
     fun setOntextEdittorEvent(textEditorEvent: TextEditorEvent) {
         text_editor_event = textEditorEvent

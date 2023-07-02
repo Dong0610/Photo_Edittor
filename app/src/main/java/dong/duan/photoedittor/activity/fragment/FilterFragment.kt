@@ -25,7 +25,6 @@ import java.io.Serializable
 class FilterFragment : Fragment() {
     lateinit var binding: FragmentFilterBinding
     lateinit var effectView: GLSurfaceView
-    lateinit var image_edit: ImageData
     lateinit var bitmap_result: Bitmap
     lateinit var filter: FilterFactory
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +39,8 @@ class FilterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        image_edit = requireArguments().getSerializable("image") as ImageData
-        bitmap_result =image_edit.bitmap!! // BitmapFactory.decodeResource(resources, R.drawable.img)
+        val filepath = requireArguments().getString("image")
+        bitmap_result = BitmapFactory.decodeFile(filepath)
         binding.imageView.setImageBitmap(bitmap_result)
         filter = FilterFactory(bitmap_result)
 
@@ -156,4 +155,7 @@ class FilterFragment : Fragment() {
         return list_string
     }
 
+    fun bitmap_result():Bitmap{
+        return bitmap_result
+    }
 }

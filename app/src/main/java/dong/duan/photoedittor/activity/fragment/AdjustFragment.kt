@@ -1,6 +1,7 @@
 package dong.duan.photoedittor.activity.fragment
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.effect.Effect
 import android.os.Build
 import android.os.Bundle
@@ -29,9 +30,7 @@ import kotlin.math.abs
 
 class AdjustFragment : Fragment() {
     lateinit var binding: FragmentAdjustBinding
-
-    lateinit var image_edit:ImageData
-    lateinit var bitmap_result:Bitmap
+    private lateinit var bitmap_result:Bitmap
     var adapter: GenericAdapter<EditData, ItemEditListBinding>? = null
 
     private var imageJob: Job? = null
@@ -41,9 +40,9 @@ class AdjustFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentAdjustBinding.inflate(layoutInflater)
-        image_edit = requireArguments().getSerializable("image") as ImageData
-        binding.imageView.setImageBitmap(image_edit.bitmap)
-        bitmap_result=image_edit.bitmap!!
+        val filepath = requireArguments().getString("image")
+        bitmap_result = BitmapFactory.decodeFile(filepath)
+        binding.imageView.setImageBitmap(bitmap_result)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -89,6 +88,7 @@ class AdjustFragment : Fragment() {
         binding.rcvlistEdit.adapter = adapter
     }
 
+
     @OptIn(DelicateCoroutinesApi::class)
     fun run_blocking(function:()->Unit){
         GlobalScope.launch(Dispatchers.Default) {
@@ -102,22 +102,22 @@ class AdjustFragment : Fragment() {
     private fun set_filter(editdata: EditData, it: View, textEdit: TextView) {
         when(editdata.id){
             1->{
-                show_popup_seekbar(it, this@AdjustFragment,0 , 25, 125, 100) { value ->
+                show_popup_seekbar(it, this@AdjustFragment,0 , 25, 125, -150) { value ->
                    run_blocking {
                     val valueset = (value*0.01f).coerceIn(0.35f,1.25f)
                     textEdit.text=(value-25).toString()
-                    bitmap_result= EffectFactory(image_edit.bitmap!!).apply_auto_fix(valueset,1.2f)
+                    bitmap_result= EffectFactory(bitmap_result).apply_auto_fix(valueset,1.2f)
                     binding.imageView.setImageBitmap(bitmap_result)
                    }
                 }
             }
             2->{
-                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, 100) { value ->
+                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, -150) { value ->
                     run_blocking {
                     imageJob?.cancel()
                     imageJob = imageScope.launch {
                         textEdit.text=(value).toString()
-                        bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_brightness(value.toInt())
+                        bitmap_result= EffectFactory(bitmap_result).adjust_brightness(value.toInt())
                         binding.imageView.setImageBitmap(bitmap_result)
                     }
                     }
@@ -125,24 +125,24 @@ class AdjustFragment : Fragment() {
             }
 
             3->{
-                show_popup_seekbar(it, this@AdjustFragment,0 , -10, 10, 100) { value ->
+                show_popup_seekbar(it, this@AdjustFragment,0 , -10, 10, -150) { value ->
                     run_blocking {
                         imageJob?.cancel()
                         imageJob = imageScope.launch {
                             textEdit.text=(value).toString()
-                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_contrast(value.toFloat())
+                            bitmap_result= EffectFactory(bitmap_result).adjust_contrast(value.toFloat())
                             binding.imageView.setImageBitmap(bitmap_result)
                         }
                     }
                 }
             }
             4->{
-                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, 100) { value ->
+                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, -150) { value ->
                     run_blocking {
                         imageJob?.cancel()
                         imageJob = imageScope.launch {
                             textEdit.text=(value).toString()
-                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_saturation(value.toFloat())
+                            bitmap_result= EffectFactory(bitmap_result).adjust_saturation(value.toFloat())
                             binding.imageView.setImageBitmap(bitmap_result)
                         }
                     }
@@ -150,24 +150,24 @@ class AdjustFragment : Fragment() {
             }
 
             5->{
-                show_popup_seekbar(it, this@AdjustFragment,0 , 0, 10, 100) { value ->
+                show_popup_seekbar(it, this@AdjustFragment,0 , 0, 10, -150) { value ->
                     run_blocking {
                         imageJob?.cancel()
                         imageJob = imageScope.launch {
                             textEdit.text=(value).toString()
-                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_exposure(value.toFloat())
+                            bitmap_result= EffectFactory(bitmap_result).adjust_exposure(value.toFloat())
                             binding.imageView.setImageBitmap(bitmap_result)
                         }
                     }
                 }
             }
             6->{
-                show_popup_seekbar(it, this@AdjustFragment,10, 0, 20, 100) { value ->
+                show_popup_seekbar(it, this@AdjustFragment,10, 0, 20, -150) { value ->
                     run_blocking {
                         imageJob?.cancel()
                         imageJob = imageScope.launch {
                             textEdit.text= abs(value*5).toString()
-                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_tint((value-20).toFloat())
+                            bitmap_result= EffectFactory(bitmap_result).adjust_tint((value-20).toFloat())
                             binding.imageView.setImageBitmap(bitmap_result)
                         }
                     }
@@ -175,24 +175,24 @@ class AdjustFragment : Fragment() {
             }
 
             7->{
-                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, 100) { value ->
+                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, -150) { value ->
                     run_blocking {
                         imageJob?.cancel()
                         imageJob = imageScope.launch {
                             textEdit.text=(value).toString()
-                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_temperature(value)
+                            bitmap_result= EffectFactory(bitmap_result).adjust_temperature(value)
                             binding.imageView.setImageBitmap(bitmap_result)
                         }
                     }
                 }
             }
             8->{
-            show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, 100) { value ->
+            show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, -150) { value ->
                 run_blocking {
                     imageJob?.cancel()
                     imageJob = imageScope.launch {
                         textEdit.text=(value).toString()
-                        bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_tone(value.toFloat())
+                        bitmap_result= EffectFactory(bitmap_result).adjust_tone(value.toFloat())
                         binding.imageView.setImageBitmap(bitmap_result)
                     }
                 }
@@ -200,24 +200,24 @@ class AdjustFragment : Fragment() {
         }
 
             9->{
-                show_popup_seekbar(it, this@AdjustFragment,0 , -10, 10, 100) { value ->
+                show_popup_seekbar(it, this@AdjustFragment,0 , -10, 10, -150) { value ->
                     run_blocking {
                         imageJob?.cancel()
                         imageJob = imageScope.launch {
                             textEdit.text=(value).toString()
-                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_slossiness(value.toFloat())
+                            bitmap_result= EffectFactory(bitmap_result).adjust_slossiness(value.toFloat())
                             binding.imageView.setImageBitmap(bitmap_result)
                         }
                     }
                 }
             }
             10->{
-                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, 100) { value ->
+                show_popup_seekbar(it, this@AdjustFragment,0 , -100, 100, -150) { value ->
                     run_blocking {
                         imageJob?.cancel()
                         imageJob = imageScope.launch {
                             textEdit.text=(value).toString()
-                            bitmap_result= EffectFactory(image_edit.bitmap!!).adjust_shadow(value.toFloat())
+                            bitmap_result= EffectFactory(bitmap_result).adjust_shadow(value.toFloat())
                             binding.imageView.setImageBitmap(bitmap_result)
                         }
                     }

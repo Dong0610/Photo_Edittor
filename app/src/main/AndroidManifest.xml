@@ -32,6 +32,12 @@
             android:name=".activity.fragment.TextActivity"
             android:exported="true" />
         <activity
+            android:name=".activity.fragment.ImageActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.fragment.EmojiActivity"
+            android:exported="true" />
+        <activity
             android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>

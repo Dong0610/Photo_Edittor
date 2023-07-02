@@ -41,13 +41,155 @@
         android:singleLine="true"
         android:textColorPrimary="#FFFFFF"
         android:textSize="40sp"
-        app:layout_constraintBottom_toTopOf="@+id/layout_color"
+        app:layout_constraintBottom_toTopOf="@+id/layout_font"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_text_done_tv"
         app:layout_constraintVertical_bias="0.0"
         tools:visibility="visible" />
+
+    <HorizontalScrollView
+        android:id="@+id/layout_font"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/_5sdp"
+        android:orientation="horizontal"
+        android:padding="@dimen/_3sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/layout_color"
+        tools:listitem="@layout/item_font_text" >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textColor="@color/white"
+                android:text="Aa"
+                android:id="@+id/vagrb"
+                android:fontFamily="@font/vagrb"
+                android:padding="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Aa"
+                android:id="@+id/vallergo"
+                android:fontFamily="@font/vallergo"
+                android:padding="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Aa"
+                android:id="@+id/vbookmn"
+                android:fontFamily="@font/vbookmn"
+                android:padding="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Aa"
+                android:id="@+id/vnmaladay"
+                android:fontFamily="@font/vnmaladay"
+                android:padding="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Aa"
+                android:id="@+id/vnshell"
+                android:fontFamily="@font/vnshell"
+                android:padding="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Aa"
+                android:id="@+id/vnstam"
+                android:fontFamily="@font/vnstam"
+                android:padding="@dimen/_4sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp" />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Aa"
+                android:id="@+id/vnswansong"
+                android:fontFamily="@font/vnswansong"
+                android:padding="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Aa"
+                android:id="@+id/font_text"
+                android:fontFamily="@font/vagrb"
+                android:padding="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Aa"
+                android:id="@+id/vrevue"
+                android:fontFamily="@font/vrevue"
+                android:padding="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Aa"
+                android:id="@+id/vtekti"
+                android:fontFamily="@font/vtekti"
+                android:padding="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+            <TextView
+                android:textColor="@color/white"
+                android:text="Aa"
+                android:id="@+id/vtube"
+                android:fontFamily="@font/vtube"
+                android:padding="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/layout_color"

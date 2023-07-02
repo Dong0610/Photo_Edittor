@@ -30,7 +30,6 @@ class DrawingView @JvmOverloads constructor(
 ) : View(context, attrs, defStyle) {
     var isDrawingEnabled = false
         private set
-    private var viewChangeListener: BrushViewChangeListener? = null
 
     // eraser parameters
     private var isErasing = false
@@ -62,9 +61,6 @@ class DrawingView @JvmOverloads constructor(
         invalidate()
     }
 
-    fun setBrushViewChangeListener(brushViewChangeListener: BrushViewChangeListener?) {
-        viewChangeListener = brushViewChangeListener
-    }
 
     public override fun onDraw(canvas: Canvas) {
     }

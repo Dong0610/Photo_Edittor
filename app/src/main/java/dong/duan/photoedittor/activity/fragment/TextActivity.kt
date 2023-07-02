@@ -1,24 +1,27 @@
 package dong.duan.photoedittor.activity.fragment
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.Settings
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.lifecycleScope
+import dong.duan.photoedittor.R
 import dong.duan.photoedittor.activity.BaseActivity
 import dong.duan.photoedittor.databinding.ActivityTextBinding
 import dong.duan.photoedittor.edit_library.text.FileSaveHelper
@@ -28,14 +31,13 @@ import dong.duan.photoedittor.edit_library.text.PhotoEditor
 import dong.duan.photoedittor.edit_library.text.SaveSettings
 import dong.duan.photoedittor.edit_library.text.TextStyleBuilder
 import dong.duan.photoedittor.edit_library.text.ViewType
-import dong.duan.photoedittor.file.bitmap_from_uri
 import dong.duan.photoedittor.file.bitmap_to_file
 import dong.duan.photoedittor.file.log
 import dong.duan.photoedittor.file.show_toast
-import dong.duan.photoedittor.file.uri_from_bitmap
 import dong.duan.photoedittor.model.ImageEdit
 import kotlinx.coroutines.launch
 import java.io.File
+
 
 @Suppress("DEPRECATION")
 class TextActivity : BaseActivity(), OnPhotoEditorListener {
@@ -51,23 +53,33 @@ class TextActivity : BaseActivity(), OnPhotoEditorListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-      val filepath=  intent.getStringExtra("bimap")
-         bitmap_result = BitmapFactory.decodeFile(filepath)
+        val filepath = intent.getStringExtra("bimap")
+        bitmap_result = BitmapFactory.decodeFile(filepath)
         val pinchTextScalable = intent.getBooleanExtra(PINCH_TEXT_SCALABLE_INTENT_KEY, true)
         mPhotoEditor = PhotoEditor.Builder(this, binding.drawview)
             .setPinchTextScalable(pinchTextScalable)
             .build()
         mPhotoEditor.setOnPhotoEditorListener(this)
-        mSaveFileHelper= FileSaveHelper(this)
+        mSaveFileHelper = FileSaveHelper(this)
         binding.drawview.source.setImageBitmap(bitmap_result)
 
         binding.icAddtext.setOnClickListener {
             val text_edtfg = OverlayTextFragment.show(this)
             text_edtfg.setOntextEdittorEvent(object : OverlayTextFragment.TextEditorEvent {
-                override fun onDone(input: String, color: Int) {
+                @RequiresApi(Build.VERSION_CODES.O)
+                @SuppressLint("WrongConstant")
+                override fun onDone(input: String, color: Int, value: Int?) {
                     val textStyle = TextStyleBuilder()
+
                     textStyle.withTextColor(color)
-                    mPhotoEditor.addText(input, color)
+                    if (value != null) {
+                        val typeface = resources.getFont(value)
+                        textStyle.withTextStyle(typeface)
+                        mPhotoEditor.addText(typeface, input, color)
+                    } else {
+                        mPhotoEditor.addText(input, color)
+                    }
+
                 }
 
             })
@@ -76,49 +88,30 @@ class TextActivity : BaseActivity(), OnPhotoEditorListener {
         binding.txtSave.setOnClickListener {
             saveImage { bitmap ->
                 val resultIntent = Intent()
-                var file= bitmap_to_file(bitmap,this)
-                if(file==null){
-                    show_toast(this,"File is null",)
+                var file = bitmap_to_file(bitmap, this)
+                if (file == null) {
+                    show_toast(this, "File is null")
                 }
 
-                resultIntent.putExtra("image",file.absolutePath)
+                resultIntent.putExtra("image", file.absolutePath)
                 setResult(Activity.RESULT_OK, resultIntent)
                 finish()
-
             }
 
             deleteAllJpgFilesInPicturesFolder()
         }
+        binding.icUndo.setOnClickListener {
+            mPhotoEditor.undo()
+        }
+        binding.icRedo.setOnClickListener {
+            mPhotoEditor.redo()
+        }
 
-
-
-    //    openDirectory()
-    }
-
-    private fun deleteFilesInDirectory(directoryUri: Uri) {
-        val resolver = contentResolver
-        resolver.takePersistableUriPermission(
-            directoryUri,
-            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        )
-
-        val directory = DocumentFile.fromTreeUri(this, directoryUri)
-        deleteRecursive(directory)
-    }
-
-    private fun deleteRecursive(documentFile: DocumentFile?) {
-        if (documentFile != null) {
-            if (documentFile.isDirectory) {
-                val files = documentFile.listFiles()
-                if (files != null) {
-                    for (file in files) {
-                        deleteRecursive(file)
-                    }
-                }
-            }
-            documentFile.delete()
+        binding.txtCancel2.setOnClickListener {
+            onBackPressed()
         }
     }
+
 
 
     override fun onRequestPermissionsResult(
@@ -131,9 +124,6 @@ class TextActivity : BaseActivity(), OnPhotoEditorListener {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission granted, proceed with file deletion
                 deleteAllFilesInPath("/storage/emulated/0/Pictures/")
-            } else {
-                // Permission denied
-                // Handle the case where the user denied the permission
             }
         }
     }
@@ -164,7 +154,7 @@ class TextActivity : BaseActivity(), OnPhotoEditorListener {
                                 .build()
                             var bitmap = mPhotoEditor.saveAsBitmap(saveSettings)
                             bitmapcal(bitmap)
-                            log("a","pathImg:"+ filePath.toString())
+                            log("a", "pathImg:" + filePath.toString())
                             deleteAllJpgFilesInPicturesFolder()
                             val path = "/storage/emulated/0/Pictures/"
                             deleteAllFilesInPath(path)
@@ -175,7 +165,6 @@ class TextActivity : BaseActivity(), OnPhotoEditorListener {
                     }
 
 
-
                 }
             })
 
@@ -184,6 +173,7 @@ class TextActivity : BaseActivity(), OnPhotoEditorListener {
             requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
     }
+
     fun deleteAllFilesInPath(path: String) {
         val directory = File(path)
         if (directory.exists() && directory.isDirectory) {
@@ -198,31 +188,42 @@ class TextActivity : BaseActivity(), OnPhotoEditorListener {
         }
     }
 
-        private fun deleteAllJpgFilesInPicturesFolder() {
-            val picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            val jpgFiles = picturesDir.listFiles { dir, name ->
-                name.endsWith(".jpg", true)
-            }
+    private fun deleteAllJpgFilesInPicturesFolder() {
+        val picturesDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        val jpgFiles = picturesDir.listFiles { dir, name ->
+            name.endsWith(".jpg", true)
+        }
 
-            if (jpgFiles != null) {
-                for (file in jpgFiles) {
-                    if (file.isFile && file.exists()) {
-                        file.delete()
-                    }
+        if (jpgFiles != null) {
+            for (file in jpgFiles) {
+                if (file.isFile && file.exists()) {
+                    file.delete()
                 }
             }
         }
+    }
 
+// Region
     override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) {
         val textEditorDialogFragment =
             OverlayTextFragment.show(this, text.toString(), colorCode)
         textEditorDialogFragment.setOntextEdittorEvent(object :
             OverlayTextFragment.TextEditorEvent {
-            override fun onDone(inputText: String, colorCode: Int) {
-                val styleBuilder = TextStyleBuilder()
-                styleBuilder.withTextColor(colorCode)
-                mPhotoEditor.editText(rootView, inputText, styleBuilder)
-                //mTxtCurrentTool.setText(R.string.label_text)
+            @RequiresApi(Build.VERSION_CODES.O)
+            @SuppressLint("WrongConstant")
+            override fun onDone(inputText: String, colorCode: Int, value: Int?) {
+                               val textStyle = TextStyleBuilder()
+                textStyle.withTextColor(colorCode)
+                if (value != null) {
+                    val typeface = resources.getFont(value)
+                    textStyle.withTextStyle(typeface)
+                    mPhotoEditor.editText(rootView,typeface, inputText, colorCode)
+                }
+                else{
+                    mPhotoEditor.editText(rootView,inputText,textStyle)
+                }
+
             }
         })
     }
@@ -249,12 +250,7 @@ class TextActivity : BaseActivity(), OnPhotoEditorListener {
 
     companion object {
 
-        private const val TAG = "EditImageActivity"
-
-        const val FILE_PROVIDER_AUTHORITY = "com.burhanrashid52.photoediting.fileprovider"
-        private const val CAMERA_REQUEST = 52
-        private const val PICK_REQUEST = 53
-        const val ACTION_NEXTGEN_EDIT = "action_nextgen_edit"
         const val PINCH_TEXT_SCALABLE_INTENT_KEY = "PINCH_TEXT_SCALABLE"
     }
+    // End Region
 }

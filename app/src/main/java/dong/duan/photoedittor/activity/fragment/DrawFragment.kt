@@ -2,6 +2,7 @@ package dong.duan.photoedittor.activity.fragment
 
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -22,7 +23,6 @@ import dong.duan.photoedittor.model.ImageData
 
 class DrawFragment : Fragment() {
     lateinit var binding:FragmentDrawBinding
-    lateinit var image_edit: ImageData
     lateinit var bitmap_result: Bitmap
 
     private var color=Colors.APP_COLOR
@@ -31,8 +31,9 @@ class DrawFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= FragmentDrawBinding.inflate(layoutInflater)
-        image_edit = requireArguments().getSerializable("image") as ImageData
-        bitmap_result = image_edit.bitmap!!
+        val filepath = requireArguments().getString("image")
+        bitmap_result = BitmapFactory.decodeFile(filepath)
+        binding.drawLayout.setImageBitmap(bitmap_result)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -62,6 +63,9 @@ class DrawFragment : Fragment() {
       return binding.root
     }
 
+    fun bitmap_result():Bitmap{
+        return binding.drawLayout.imageBitmap
+    }
     private fun even_click() {
         binding.icRedo.setOnClickListener {
             binding.drawLayout.redo()
