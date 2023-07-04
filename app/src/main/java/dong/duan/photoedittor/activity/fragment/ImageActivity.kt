@@ -10,12 +10,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
@@ -23,7 +19,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.burhanrashid52.photoediting.StickerBSFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import dong.duan.photoedittor.activity.BaseActivity
 import dong.duan.photoedittor.databinding.ActivityImageBinding
 
 import dong.duan.photoedittor.edit_library.text.FileSaveHelper
@@ -33,9 +28,9 @@ import dong.duan.photoedittor.edit_library.text.PhotoEditor
 import dong.duan.photoedittor.edit_library.text.SaveSettings
 import dong.duan.photoedittor.edit_library.text.TextStyleBuilder
 import dong.duan.photoedittor.edit_library.text.ViewType
+import dong.duan.photoedittor.file.BaseActivity
 import dong.duan.photoedittor.file.bitmap_to_file
 import dong.duan.photoedittor.file.show_toast
-import dong.duan.photoedittor.model.ImageData
 import dong.duan.photoedittor.model.ImageEdit
 import kotlinx.coroutines.launch
 
@@ -57,7 +52,7 @@ class ImageActivity : BaseActivity(), OnPhotoEditorListener, StickerBSFragment.S
         super.onCreate(savedInstanceState)
         makeFullScreen()
         setContentView(binding.root)
-        val filepath = intent.getStringExtra("bimap")
+        val filepath = intent.getStringExtra("bitmap")
         bitmap_result = BitmapFactory.decodeFile(filepath)
         mEmojiBSFragment = StickerBSFragment(applicationContext)
         mEmojiBSFragment.setStickerListener(this)
@@ -79,7 +74,7 @@ class ImageActivity : BaseActivity(), OnPhotoEditorListener, StickerBSFragment.S
                     show_toast(this, "File is null")
                 }
 
-                resultIntent.putExtra("image", file.absolutePath)
+                resultIntent.putExtra("bitmap", file.absolutePath)
                 setResult(Activity.RESULT_OK, resultIntent)
                 finish()
             }

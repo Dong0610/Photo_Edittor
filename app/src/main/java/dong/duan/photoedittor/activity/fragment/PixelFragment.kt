@@ -12,22 +12,22 @@ import dong.duan.photoedittor.R
 import dong.duan.photoedittor.adapter.GenericAdapter
 import dong.duan.photoedittor.databinding.FragmentPixelBinding
 import dong.duan.photoedittor.databinding.ItemEditListBinding
+import dong.duan.photoedittor.edit_library.pixelate.PixelFilter
 
 import dong.duan.photoedittor.model.ImageData
 import java.io.Serializable
 
 class PixelFragment : Fragment() {
   lateinit var binding:FragmentPixelBinding
-    lateinit var image_edit: ImageData
     lateinit var bitmap_result: Bitmap
-  //  lateinit var pixsel_filter:PixselateFilter
+    lateinit var pixsel_filter:PixelFilter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
        binding= FragmentPixelBinding.inflate(layoutInflater)
-        image_edit = requireArguments().getSerializable("image") as ImageData
-        bitmap_result = image_edit.bitmap!!
+        val filepath = requireArguments().getString("image")
+        bitmap_result = BitmapFactory.decodeFile(filepath)
         binding.imageView.setImageBitmap(bitmap_result)
-        //pixsel_filter= PixselateFilter(bitmap_result)
+        pixsel_filter= PixelFilter(bitmap_result)
     }
 
     override fun onCreateView(
@@ -52,39 +52,44 @@ class PixelFragment : Fragment() {
         return binding.root
     }
 
+    fun bitmap_result():Bitmap{
+        return bitmap_rs!!
+    }
+    private var bitmap_rs: Bitmap? = null
     private fun set_pixselate(pixelate: Pixelate) {
-        var bitmap_rs: Bitmap? = null
-//        when (pixelate.id) {
-//            1 -> {
-//                bitmap_rs = pixsel_filter.first_filter
-//            }
-//            2 -> {
-//                bitmap_rs =pixsel_filter.second_filter
-//            }
-//
-//            3 -> {
-//                bitmap_rs = pixsel_filter.three_filter
-//            }
-//
-//            4 -> {
-//                bitmap_rs = pixsel_filter.four_filter
-//            }
-//
-//            5 -> {
-//                bitmap_rs = pixsel_filter.five_filter
-//            }
-//
-//            6 -> {
-//
-//                bitmap_rs = pixsel_filter.six_filter
-//
-//            }
-//            7 -> {
-//                bitmap_rs = pixsel_filter.seven_filter
-//            }
-//
-//            else -> bitmap_rs = bitmap_result
-//        }
+
+        when (pixelate.id) {
+            1 -> {
+                bitmap_rs = pixsel_filter.first_filter
+            }
+            2 -> {
+                bitmap_rs =pixsel_filter.second_filter
+            }
+
+            3 -> {
+                bitmap_rs = pixsel_filter.thirst_filter
+            }
+
+            4 -> {
+                bitmap_rs = pixsel_filter.four_filter
+            }
+
+            5 -> {
+                bitmap_rs = pixsel_filter.five_filter
+            }
+
+            6 -> {
+
+                bitmap_rs = pixsel_filter.six_filter
+
+            }
+            7 -> {
+                bitmap_rs = pixsel_filter.sevent_filter
+            }
+
+            else -> bitmap_rs = bitmap_result
+        }
+
 
         binding.imageView.setImageBitmap(bitmap_rs)
     }

@@ -2,6 +2,7 @@ package dong.duan.photoedittor.activity.fragment
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -19,14 +20,17 @@ import dong.duan.photoedittor.model.ImageData
 
 class CropFragment : Fragment() {
     lateinit var binding: FragmentCropBinding
-    lateinit var image_edit: ImageData
+
     lateinit var bitmap_default: Bitmap
    private lateinit var bitmap_result: Bitmap
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentCropBinding.inflate(layoutInflater)
-        image_edit = requireArguments().getSerializable("image") as ImageData
-        bitmap_default = image_edit.bitmap!!
+        val filepath = requireArguments().getString("image")
+        bitmap_result = BitmapFactory.decodeFile(filepath)
+        bitmap_default=bitmap_result
+        binding.imageEdit.setImageBitmap(bitmap_result)
+
     }
 
     var cropShape = CropShape.RECTANGLE
@@ -36,7 +40,6 @@ class CropFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding.imageEdit.setImageBitmap(image_edit.bitmap)
         binding.imageEdit.cropShape = CropShape.RECTANGLE
 
         even_click()

@@ -101,9 +101,6 @@ class FilterFragment : Fragment() {
                 bitmap_rs = filter.apply_classic()
             }
 
-            9 -> {
-                bitmap_rs = filter.apply_fade()
-            }
 
             10 -> {
                 bitmap_rs = filter.apply_gray()
@@ -121,13 +118,10 @@ class FilterFragment : Fragment() {
                 bitmap_rs = filter.apply_brilliantpink()
             }
 
-            14 -> {
-                bitmap_rs = filter.apply_neural()
-            }
-
             else -> bitmap_rs = bitmap_result
         }
 
+        bitmap_result=bitmap_rs
         binding.imageView.setImageBitmap(bitmap_rs)
         binding.progressLoad.visibility = View.GONE
     }
@@ -145,7 +139,6 @@ class FilterFragment : Fragment() {
         list_string.add(Filter(6, "Ice",R.drawable.img_ice))
         list_string.add(Filter(7, "Spceial",R.drawable.img_spceial))
         list_string.add(Filter(8, "Classic",R.drawable.img_claasic))
-        list_string.add(Filter(9, "Fade",R.drawable.img))
         list_string.add(Filter(10, "Gray",R.drawable.img_gray))
         list_string.add(Filter(11, "Blind",R.drawable.img_blind))
         list_string.add(Filter(12, "Orange",R.drawable.img_orange))

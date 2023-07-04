@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -18,11 +17,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.lifecycleScope
-import dong.duan.photoedittor.R
-import dong.duan.photoedittor.activity.BaseActivity
 import dong.duan.photoedittor.databinding.ActivityTextBinding
 import dong.duan.photoedittor.edit_library.text.FileSaveHelper
 import dong.duan.photoedittor.edit_library.text.OnPhotoEditorListener
@@ -31,6 +26,7 @@ import dong.duan.photoedittor.edit_library.text.PhotoEditor
 import dong.duan.photoedittor.edit_library.text.SaveSettings
 import dong.duan.photoedittor.edit_library.text.TextStyleBuilder
 import dong.duan.photoedittor.edit_library.text.ViewType
+import dong.duan.photoedittor.file.BaseActivity
 import dong.duan.photoedittor.file.bitmap_to_file
 import dong.duan.photoedittor.file.log
 import dong.duan.photoedittor.file.show_toast
@@ -53,7 +49,7 @@ class TextActivity : BaseActivity(), OnPhotoEditorListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        val filepath = intent.getStringExtra("bimap")
+        val filepath = intent.getStringExtra("bitmap")
         bitmap_result = BitmapFactory.decodeFile(filepath)
         val pinchTextScalable = intent.getBooleanExtra(PINCH_TEXT_SCALABLE_INTENT_KEY, true)
         mPhotoEditor = PhotoEditor.Builder(this, binding.drawview)
@@ -93,7 +89,7 @@ class TextActivity : BaseActivity(), OnPhotoEditorListener {
                     show_toast(this, "File is null")
                 }
 
-                resultIntent.putExtra("image", file.absolutePath)
+                resultIntent.putExtra("bitmap", file.absolutePath)
                 setResult(Activity.RESULT_OK, resultIntent)
                 finish()
             }
@@ -111,23 +107,6 @@ class TextActivity : BaseActivity(), OnPhotoEditorListener {
             onBackPressed()
         }
     }
-
-
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 100) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, proceed with file deletion
-                deleteAllFilesInPath("/storage/emulated/0/Pictures/")
-            }
-        }
-    }
-
 
     @RequiresPermission(allOf = [Manifest.permission.WRITE_EXTERNAL_STORAGE])
     private fun saveImage(bitmapcal: (Bitmap) -> Unit) {

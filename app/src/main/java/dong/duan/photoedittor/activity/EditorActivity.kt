@@ -24,6 +24,9 @@ import dong.duan.photoedittor.file.FullScreenActivity
 import dong.duan.photoedittor.file.PreferenceManager
 import dong.duan.photoedittor.file.bitmap_from_uri
 import dong.duan.photoedittor.file.bitmap_to_file
+import dong.duan.photoedittor.file.save_bitmap_image
+import dong.duan.photoedittor.file.save_image
+import dong.duan.photoedittor.file.save_image_photo
 import dong.duan.photoedittor.model.EditData
 import dong.duan.photoedittor.model.ImageData
 
@@ -31,10 +34,8 @@ import dong.duan.photoedittor.model.ImageData
 @Suppress("DEPRECATION")
 class EditorActivity : FullScreenActivity() {
     lateinit var binding: ActivityEditorBinding
-    lateinit var image_edit: ImageData
     lateinit var list_edit: ArrayList<EditData>
-
-
+    
    lateinit var bitmap_end: Bitmap
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,18 +43,15 @@ class EditorActivity : FullScreenActivity() {
         binding = ActivityEditorBinding.inflate(layoutInflater)
         setContentView(binding.root)
         list_edittor()
-        image_edit = intent.getSerializableExtra("image") as ImageData
-        val contentUri = ContentUris.withAppendedId(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            image_edit.id
-        )
-        image_edit.bitmap = bitmap_from_uri(applicationContext, contentUri)
-        binding.imageView.setImageBitmap(image_edit.bitmap)
-        bitmap_end=image_edit.bitmap!!
+        val filepath=intent.getStringExtra("image")
+        bitmap_end=BitmapFactory.decodeFile(filepath)
+        binding.imageView.setImageBitmap(bitmap_end)
+
         binding.rcvlistEdit.adapter = GenericAdapter(
             list_edit,
             ItemEditListBinding::inflate
         ) { itembinding: ItemEditListBinding, data, position ->
+            itembinding.imageEdit.setBackgroundResource(R.drawable.item_filter_choose)
             itembinding.imageEdit.setImageResource(data.icon)
             itembinding.textEdit.text = data.name
             itembinding.root.setOnClickListener {
@@ -75,6 +73,10 @@ class EditorActivity : FullScreenActivity() {
             val text = binding.txtSave.text
             if (text.equals("Ok")) {
                 call_bitmap(fragentval)
+            }else if(text.equals("Save")){
+                checkWriteExternalStoragePermission {
+                    save_image_photo(bitmap_end,applicationContext)
+                }
             }
         }
 
@@ -109,7 +111,7 @@ class EditorActivity : FullScreenActivity() {
             }
             4 -> {
                 val fragment =
-                    supportFragmentManager.findFragmentById(R.id.layout_frame) as? FilterFragment
+                    supportFragmentManager.findFragmentById(R.id.layout_frame) as? PixelFragment
                 var bitmap = fragment?.bitmap_result()
                 bitmap_end = bitmap!!
                 load_fragmen(null)
@@ -131,25 +133,22 @@ class EditorActivity : FullScreenActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_TEXT && resultCode == RESULT_OK) {
-            val filePath = data?.getStringExtra("image")
+            val filePath = data?.getStringExtra("bitmap")
             val bitmaprs = BitmapFactory.decodeFile(filePath)
-            image_edit.bitmap = bitmaprs
             bitmap_end=bitmaprs
-            binding.imageView.setImageBitmap(image_edit.bitmap)
+            binding.imageView.setImageBitmap(bitmap_end)
         }
         if (requestCode == REQUEST_CODE_EMOJI && resultCode == RESULT_OK) {
-            val filePath = data?.getStringExtra("image")
+            val filePath = data?.getStringExtra("bitmap")
             val bitmaprs = BitmapFactory.decodeFile(filePath)
-            image_edit.bitmap = bitmaprs
             bitmap_end=bitmaprs
-            binding.imageView.setImageBitmap(image_edit.bitmap)
+            binding.imageView.setImageBitmap(bitmap_end)
         }
         if (requestCode == REQUEST_CODE_IMAGE && resultCode == RESULT_OK) {
-            val filePath = data?.getStringExtra("image")
+            val filePath = data?.getStringExtra("bitmap")
             val bitmaprs = BitmapFactory.decodeFile(filePath)
-            image_edit.bitmap = bitmaprs
             bitmap_end=bitmaprs
-            binding.imageView.setImageBitmap(image_edit.bitmap)
+            binding.imageView.setImageBitmap(bitmap_end)
         }
 
 
@@ -209,7 +208,7 @@ class EditorActivity : FullScreenActivity() {
             6 -> {
                 PreferenceManager(applicationContext).PutString("edt", "text")
                 val intent = Intent(this, TextActivity::class.java)
-                intent.putExtra("bimap", bitmap_to_file(bitmap_end, this).absolutePath)
+                intent.putExtra("bitmap", bitmap_to_file(bitmap_end, this).absolutePath)
                 startActivityForResult(intent, REQUEST_CODE_TEXT)
 
             }
@@ -217,14 +216,14 @@ class EditorActivity : FullScreenActivity() {
             7 -> {
                 PreferenceManager(applicationContext).PutString("edt", "emoj")
                 val intent = Intent(this, EmojiActivity::class.java)
-                intent.putExtra("bimap", bitmap_to_file(bitmap_end, this).absolutePath)
+                intent.putExtra("bitmap", bitmap_to_file(bitmap_end, this).absolutePath)
                 startActivityForResult(intent, REQUEST_CODE_EMOJI)
             }
 
             8 -> {
                 PreferenceManager(applicationContext).PutString("edt", "emoj")
                 val intent = Intent(this, ImageActivity::class.java)
-                intent.putExtra("bimap", bitmap_to_file(bitmap_end, this).absolutePath)
+                intent.putExtra("bitmap", bitmap_to_file(bitmap_end, this).absolutePath)
                 startActivityForResult(intent, REQUEST_CODE_IMAGE)
             }
 
